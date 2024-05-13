@@ -58,6 +58,8 @@ const sections: Section[] = [
       },
       { text: "Há quanto tempo ocorre o problema?", options: "" },
       { text: "Apresenta algum código de erro?", options: ["Sim", "Não"] },
+      { text: "SE SIM, qual código de erro?", options: "" },
+
       {
         text: "Houve queda de energia antes de ocorrer o problema?",
         options: ["Sim", "Não"],
@@ -250,7 +252,6 @@ const generatePDF = (responses: {
       },
     },
   };
-  console.log("respomde satas", responses);
   // Gerar o PDF
   const pdfDoc = pdfMake.createPdf(docDefinition);
 
