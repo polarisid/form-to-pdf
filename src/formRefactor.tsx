@@ -8,7 +8,8 @@ import Box from "@mui/material/Box";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { saveAs } from "file-saver";
-
+import CameraCapture from "./camera";
+import ImageUploader from "react-images-upload";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 interface Question {
@@ -209,37 +210,58 @@ const sections: Section[] = [
   },
 ];
 
-const generatePDF = (responses: {
-  [key: string]: {
-    question: string;
-    answer: string;
-  }[];
-}) => {
+// aqui funciona com as fotos
+const generatePDF = (
+  responses: {
+    [key: string]: { question: string; answer: string }[];
+  },
+  photos: { session: string; image: string }[]
+) => {
   const content = [];
 
-  //   Iterar sobre as seções e adicionar perguntas e respostas ao PDF
+  // Iterar sobre as seções e adicionar perguntas e respostas ao PDF
   for (const sectionName in responses) {
-    //     // Adicionar nome da seção
+    // Adicionar nome da seção
     content.push({ text: sectionName, style: "sectionHeader" });
 
-    //   Criar uma tabela para armazenar as perguntas e respostas
+    // Criar uma tabela para armazenar as perguntas e respostas
     const table = {
       table: {
         widths: [400, "*"], // Largura das colunas
-        body: [["PERGUNTA", "RESPOSTA"]] as string[][], // Corpo da tabela com tipo explícito
+        body: [["PERGUNTA", "RESPOSTA"]] as string[][],
+        pageBreak: "after",
+        // Corpo da tabela com tipo explícito
       },
       layout: "tableExample", // Layout da tabela
     };
 
-    // // Iterar sobre as perguntas e respostas da seção
+    // Iterar sobre as perguntas e respostas da seção
     responses[sectionName].forEach((response) => {
       // Adicionar linha na tabela com a pergunta e a resposta
       table.table.body.push([response.question, response.answer]);
     });
 
-    //     // // Adicionar a tabela ao conteúdo do PDF
+    // Adicionar a tabela ao conteúdo do PDF
+
     content.push(table);
   }
+
+  const contentNew = [
+    {
+      pageBreak: "after",
+    },
+  ];
+
+  // Adicionar fotos ao conteúdo do PDF
+  photos.forEach((photo) => {
+    content.push({
+      image: photo.image,
+      width: 300,
+      // pageBreak: "after", /// Quebra de página após cada imagem
+      alignment: "center",
+    });
+    content.push({ text: photo.session, style: "sectionHeader" });
+  });
 
   const docDefinition = {
     content: content, // Conteúdo do PDF
@@ -247,11 +269,10 @@ const generatePDF = (responses: {
       // Definição de estilos
       sectionHeader: {
         bold: true,
-
-        // margin,
       },
     },
   };
+
   // Gerar o PDF
   const pdfDoc = pdfMake.createPdf(docDefinition);
 
@@ -261,10 +282,100 @@ const generatePDF = (responses: {
   });
 };
 
+// aqui ta dando certo
+// const generatePDF = (responses: {
+//   [key: string]: {
+//     question: string;
+//     answer: string;
+//   }[];
+// }) => {
+//   const content = [];
+
+//   //   Iterar sobre as seções e adicionar perguntas e respostas ao PDF
+//   for (const sectionName in responses) {
+//     //     // Adicionar nome da seção
+//     content.push({ text: sectionName, style: "sectionHeader" });
+
+//     //   Criar uma tabela para armazenar as perguntas e respostas
+//     const table = {
+//       table: {
+//         widths: [400, "*"], // Largura das colunas
+//         body: [["PERGUNTA", "RESPOSTA"]] as string[][], // Corpo da tabela com tipo explícito
+//       },
+//       layout: "tableExample", // Layout da tabela
+//     };
+
+//     // // Iterar sobre as perguntas e respostas da seção
+//     responses[sectionName].forEach((response) => {
+//       // Adicionar linha na tabela com a pergunta e a resposta
+//       table.table.body.push([response.question, response.answer]);
+//     });
+
+//     //     // // Adicionar a tabela ao conteúdo do PDF
+//     content.push(table);
+//   }
+
+//   const docDefinition = {
+//     content: content, // Conteúdo do PDF
+//     styles: {
+//       // Definição de estilos
+//       sectionHeader: {
+//         bold: true,
+
+//         // margin,
+//       },
+//     },
+//   };
+//   // Gerar o PDF
+//   const pdfDoc = pdfMake.createPdf(docDefinition);
+
+//   // Baixar o PDF
+//   pdfDoc.getBlob((blob: any) => {
+//     saveAs(blob, "relatorio_garantia.pdf");
+//   });
+// };
+
 // Exemplo de uso com as respostas fornecidas
 
 const FormComponent: React.FC = () => {
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
+
+  const [capturedImages, setCapturedImages] = useState<
+    { session: string; image: string }[]
+  >([]);
+  const [selectedSession, setSelectedSession] = useState<string>("");
+
+  // const [capturedImage, setCapturedImage] = useState<string | null>(null);
+
+  // const handleCapture = (imageSrc: string) => {
+  //   setCapturedImage(imageSrc);
+  // };
+  const handleCapture = (imageSrc: string) => {
+    if (selectedSession) {
+      setCapturedImages([
+        ...capturedImages,
+        { session: selectedSession, image: imageSrc },
+      ]);
+    } else {
+      alert("Por favor, selecione uma sessão para a foto.");
+    }
+    console.log(capturedImages);
+  };
+
+  // const handleImageUpload = (files: File[]) => {
+  //   const reader = new FileReader();
+  //   reader.readAsDataURL(files[0]);
+  //   reader.onload = () => {
+  //     if (selectedSession) {
+  //       setCapturedImages([
+  //         ...capturedImages,
+  //         { session: selectedSession, image: reader.result as string },
+  //       ]);
+  //     } else {
+  //       alert("Por favor, selecione uma sessão para a foto.");
+  //     }
+  //   };
+  // };
 
   const handleChange =
     (questionText: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -301,13 +412,11 @@ const FormComponent: React.FC = () => {
 
         // Adicionar a pergunta e resposta ao array da seção correspondente
         responses[section.name].push({ question: question.text, answer });
-        // generatePDF(responses);
       });
     });
-    generatePDF(responses);
+    generatePDF(responses, capturedImages);
 
     // Exibir o objeto de respostas no console
-    console.log("Perguntas e respostas:", responses);
   };
   return (
     <FormContainer>
@@ -372,6 +481,53 @@ const FormComponent: React.FC = () => {
             ))}
           </FormSection>
         ))}
+        <h1>Capture Photos</h1>
+        <div>
+          <label htmlFor="session">Selecione uma sessão:</label>
+          <select
+            id="session"
+            value={selectedSession}
+            onChange={(e) => setSelectedSession(e.target.value)}
+          >
+            <option value="">Selecione...</option>
+            <option value="Produto">Fotos do Produto</option>
+            <option value="Testes">Fotos dos Testes</option>
+            <option value="Peças">Fotos das Peças</option>
+            <option value="Defeito">Fotos do Defeito</option>
+          </select>
+        </div>
+        <div>
+          <h2>Captura de Foto</h2>
+          <CameraCapture onCapture={handleCapture} />
+        </div>
+        <div>
+          {/* <h2>Upload de Foto</h2>
+          <ImageUploader
+            withIcon
+            buttonText="Escolher Imagem"
+            onChange={handleImageUpload}
+            imgExtension={[".jpg", ".png"]}
+            maxFileSize={5242880}
+          /> */}
+        </div>
+        {capturedImages.length > 0 && (
+          <div>
+            <h2>Preview</h2>
+            <div style={{ display: "flex", flexWrap: "wrap" }}>
+              {capturedImages.map((capture, index) => (
+                <div key={index} style={{ margin: "10px" }}>
+                  <img
+                    src={capture.image}
+                    alt={`Captured ${index}`}
+                    style={{ maxWidth: "100px", maxHeight: "100px" }}
+                    key={index} // Adicionando a chave aqui
+                  />
+                  <p>Sessão: {capture.session}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         <SubmitButton type="submit">Enviar</SubmitButton>
       </form>
     </FormContainer>

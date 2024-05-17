@@ -21,8 +21,11 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.51.4",
+    "react-image-crop": "^11.0.5",
+    "react-images-upload": "^1.2.8",
     "react-pdf": "^8.0.2",
     "react-scripts": "5.0.1",
+    "react-webcam": "^7.2.0",
     "styled": "^1.0.0",
     "styled-components": "^6.1.11",
     "typescript": "^4.9.5",
@@ -54,6 +57,7 @@
   },
   "devDependencies": {
     "@types/file-saver": "^2.0.7",
-    "@types/pdfmake": "^0.2.9"
+    "@types/pdfmake": "^0.2.9",
+    "@types/react-image-crop": "^8.1.6"
   }
 }
