@@ -481,7 +481,7 @@ const FormComponent: React.FC = () => {
             ))}
           </FormSection>
         ))}
-        <h1>Capture Photos</h1>
+        <h1>Evidências</h1>
         <div>
           <label htmlFor="session">Selecione uma sessão:</label>
           <select
@@ -497,7 +497,7 @@ const FormComponent: React.FC = () => {
           </select>
         </div>
         <div>
-          <h2>Captura de Foto</h2>
+          <h2>Tire uma foto</h2>
           <CameraCapture onCapture={handleCapture} />
         </div>
         <div>
