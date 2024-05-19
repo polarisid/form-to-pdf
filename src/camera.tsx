@@ -37,7 +37,7 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
         style={{ display: "none" }}
         onChange={handleFileChange}
       />
-      <button onClick={handleButtonClick}>Capture Photo</button>
+      <button onClick={handleButtonClick}>Tirar Foto</button>
     </>
   );
 };
