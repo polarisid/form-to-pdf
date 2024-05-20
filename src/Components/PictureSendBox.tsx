@@ -33,7 +33,7 @@ const PictureSendBox: React.FC<PictureSendBoxProps> = ({
         </select>
       </div>
       <div>
-        <h2>Tire uma foto</h2>
+        <h1>Tire uma foto</h1>
         <CameraCapture onCapture={handleCapture} />
       </div>
       <div>

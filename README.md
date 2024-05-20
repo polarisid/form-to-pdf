@@ -26,4 +26,4 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ### 17/04 - Adicionada a opção de anexar fotos
 
-### 19/04 - Refatoração de código
+### 19/04 - Refatoração de código e adicionada questões opcionais que se abrem de acordo com a resposta anterior

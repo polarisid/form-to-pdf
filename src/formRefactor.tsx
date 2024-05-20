@@ -11,6 +11,8 @@ import Header from "./Components/Header";
 import PictureSendBox from "./Components/PictureSendBox";
 import Imprimir from "./imprimir";
 import Footer from "./Components/Footer";
+import OpenAI from "openai";
+import axios from "axios";
 
 interface Question {
   text: string;
@@ -25,7 +27,30 @@ interface Section {
 
 const sections: Section[] = FormDataSections;
 
+const openai = new OpenAI({
+  apiKey: process.env.REACT_APP_CHATGPT_KEY,
+  organization: process.env.organizantion,
+  project: process.env.project,
+  dangerouslyAllowBrowser: true,
+});
+
+async function main() {
+  const stream = await openai.chat.completions.create({
+    model: "gpt-3.5-turbo",
+    messages: [{ role: "user", content: "Say this is a test" }],
+    stream: true,
+  });
+  for await (const chunk of stream) {
+    process.stdout.write(chunk.choices[0]?.delta?.content || "");
+  }
+}
+// main();
+
 const FormComponent: React.FC = () => {
+  const client = axios.create({
+    headers: { Authorization: `Bearer ${process.env.REACT_APP_CHATGPT_KEY}` },
+  });
+
   const [formData, setFormData] = useState<{ [key: string]: string }>({});
   const [capturedImages, setCapturedImages] = useState<
     { session: string; image: string }[]
@@ -132,6 +157,7 @@ const FormComponent: React.FC = () => {
     console.log("Captured Images:", capturedImages);
 
     Imprimir(responses, capturedImages);
+    // main();
   };
 
   const renderConditionalQuestions = (

@@ -343,6 +343,7 @@ export default function Imprimir(
     content.push({
       text: photo.session,
       style: "sectionHeader",
+      alignment: "center",
     });
   });
 

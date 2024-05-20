@@ -194,9 +194,20 @@ const Section_7: Section = {
       text: "Em qual unidade está o defeito",
       options: ["Evaporadora", "Condensadora"],
     },
+  ],
+};
+const Section_8: Section = {
+  name: "Causa Raiz",
+  questions: [
     {
-      text: "Qual a(s) peça(s) com defeito?",
-      options: "",
+      text: "Qual tipo de problema?",
+      options: ["Fabricação", "Instalação"],
+      conditionalQuestions: {
+        Fabricação: [{ text: "Qual a peça com defeito?", options: "" }],
+        Instalação: [
+          { text: "Qual parte da instalação ocasiona o defeito?", options: "" },
+        ],
+      },
     },
   ],
 };
@@ -209,4 +220,5 @@ export const FormDataSections: Section[] = [
   Section_5,
   Section_6,
   Section_7,
+  Section_8,
 ];

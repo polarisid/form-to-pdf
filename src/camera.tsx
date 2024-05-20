@@ -1,5 +1,7 @@
 import React, { useCallback, useRef } from "react";
-
+import IconButton from "@mui/material/IconButton";
+import CameraAltIcon from "@mui/icons-material/CameraAlt";
+import Stack from "@mui/material/Stack";
 interface CameraCaptureProps {
   onCapture: (imageSrc: string) => void;
 }
@@ -37,7 +39,10 @@ const CameraCapture: React.FC<CameraCaptureProps> = ({ onCapture }) => {
         style={{ display: "none" }}
         onChange={handleFileChange}
       />
-      <button onClick={handleButtonClick}>Tirar Foto</button>
+      <IconButton onClick={handleButtonClick} aria-label="Tirar Foto">
+        <CameraAltIcon />
+      </IconButton>
+      {/* <button onClick={handleButtonClick}>Tirar Foto</button> */}
     </>
   );
 };
