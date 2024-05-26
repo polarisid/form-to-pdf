@@ -1,44 +1,37 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import "./Logo.css";
+
 import styled from "styled-components";
-import { TextField, Button, MenuItem } from "@mui/material";
+import { TextField, Button } from "@mui/material";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Box from "@mui/material/Box";
-import MainContainer from "./Components/MainContainer";
-import { FormDataSections } from "./FormData";
-import Header from "./Components/Header";
-import PictureSendBox from "./Components/PictureSendBox";
+import Logo from "./logo";
+import { FormDataSections } from "./utils/FormData";
+import {
+  Header,
+  PictureSendBox,
+  Footer,
+  FormQuestion,
+  MainContainer,
+} from "./Components";
 import Imprimir from "./imprimir";
-import Footer from "./Components/Footer";
-// import OpenAI from "openai";
-import axios from "axios";
-
-interface Question {
-  text: string;
-  options: string | string[];
-  conditionalQuestions?: { [answer: string]: Question[] };
-}
-
-interface Section {
-  name: string;
-  questions: Question[];
-}
+import { Section, Question } from "./Types/formTypes";
+import useForm from "./Hooks/useForm";
 
 const sections: Section[] = FormDataSections;
 
-// main();
-
 const FormComponent: React.FC = () => {
-  const client = axios.create({
-    headers: { Authorization: `Bearer ${process.env.REACT_APP_CHATGPT_KEY}` },
-  });
-
-  const [formData, setFormData] = useState<{ [key: string]: string }>({});
-  const [capturedImages, setCapturedImages] = useState<
-    { session: string; image: string }[]
-  >([]);
-  const [selectedSession, setSelectedSession] = useState<string>("");
+  const {
+    formData,
+    selectedSession,
+    setFormData,
+    capturedImages,
+    setCapturedImages,
+    setSelectedSession,
+    handleChange,
+  } = useForm();
 
   const handleCapture = (imageSrc: string) => {
     if (selectedSession) {
@@ -51,27 +44,20 @@ const FormComponent: React.FC = () => {
     }
   };
 
-  const handleImageUpload = (files: File[]) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(files[0]);
-    reader.onload = () => {
-      if (selectedSession) {
-        setCapturedImages([
-          ...capturedImages,
-          { session: selectedSession, image: reader.result as string },
-        ]);
-      } else {
-        alert("Por favor, selecione uma sessão para a foto.");
-      }
-    };
-  };
-
-  const handleChange =
-    (questionText: string) => (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newFormData = { ...formData };
-      newFormData[questionText] = event.target.value;
-      setFormData(newFormData);
-    };
+  // const handleImageUpload = (files: File[]) => {
+  //   const reader = new FileReader();
+  //   reader.readAsDataURL(files[0]);
+  //   reader.onload = () => {
+  //     if (selectedSession) {
+  //       setCapturedImages([
+  //         ...capturedImages,
+  //         { session: selectedSession, image: reader.result as string },
+  //       ]);
+  //     } else {
+  //       alert("Por favor, selecione uma sessão para a foto.");
+  //     }
+  //   };
+  // };
 
   const gatherConditionalResponses = (
     questions: Question[],
@@ -206,68 +192,16 @@ const FormComponent: React.FC = () => {
   return (
     <>
       <MainContainer>
+        {/* <LogoStyled><Logo /></LogoStyled */}
         <Header />
         <form onSubmit={handleSubmit}>
           {sections.map((section, sectionIndex) => (
-            <FormSection key={sectionIndex}>
-              <h2>{section.name}</h2>
-              {section.questions.map((question, questionIndex) => (
-                <div className="questions-class" key={questionIndex}>
-                  <label>{question.text}</label>
-
-                  {Array.isArray(question.options) ? (
-                    <RadioButtonsSection>
-                      {question.options.map((option, optionIndex) => (
-                        <div key={optionIndex}>
-                          <RadioGroup
-                            row
-                            aria-labelledby="demo-form-control-label-placement"
-                            name="position"
-                            value={formData[question.text] || ""}
-                            onChange={handleChange(question.text)}
-                          >
-                            <FormControlLabel
-                              value={option}
-                              control={
-                                <Radio
-                                  required
-                                  name={question.text}
-                                  value={option}
-                                  checked={formData[question.text] === option}
-                                />
-                              }
-                              label={option}
-                              labelPlacement="top"
-                            />
-                          </RadioGroup>
-                        </div>
-                      ))}
-                    </RadioButtonsSection>
-                  ) : (
-                    <Box
-                      component="form"
-                      sx={{
-                        "& > :not(style)": { m: 1, width: "35ch" },
-                      }}
-                      noValidate
-                      autoComplete="on"
-                    >
-                      <TextField
-                        required
-                        id="outlined-basic"
-                        variant="outlined"
-                        value={formData[question.text] || ""}
-                        onChange={handleChange(question.text)}
-                        size="small"
-                      />
-                    </Box>
-                  )}
-                  {renderConditionalQuestions(
-                    question.conditionalQuestions?.[formData[question.text]]
-                  )}
-                </div>
-              ))}
-            </FormSection>
+            <FormQuestion
+              key={sectionIndex}
+              section={section}
+              sectionIndex={sectionIndex}
+              renderConditionalQuestions={renderConditionalQuestions}
+            ></FormQuestion>
           ))}
           <Button type="submit" variant="contained" color="success">
             GERAR PDF
@@ -280,31 +214,18 @@ const FormComponent: React.FC = () => {
           />
         </form>
       </MainContainer>
-      <Footer></Footer>
+      <Footer />
     </>
   );
 };
-
+const LogoStyled = styled.div`
+  align-items: center;
+  text-align: center;
+`;
 const RadioButtonsSection = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
-
-const FormSection = styled.div`
-  margin-bottom: 20px;
-  label {
-    margin: 10px;
-    font-weight: 500;
-  }
-
-  .questions-class {
-    background-color: #8a8a8a1d;
-    margin-bottom: 15px;
-    border-radius: 10px;
-    padding: 5px;
-    border: 1px solid #bdbdbd68;
-  }
 `;
 
 export default FormComponent;

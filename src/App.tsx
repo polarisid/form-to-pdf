@@ -1,14 +1,27 @@
-import React, { useState } from "react";
-import Imprimir from "./imprimir";
 import "./App.css";
+import React, { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-// import FormComponent from "./form";
+import { FormProvider } from "./Contexts/formContext";
+import Logo from "./logo";
 import FormComponent from "./formRefactor";
 function App() {
+  const [showContent, setShowContent] = useState(false);
+
+  const handleAnimationEnd = () => {
+    setShowContent(true);
+  };
+
   return (
-    <div className="App">
-      <FormComponent></FormComponent>
-    </div>
+    <FormProvider>
+      {!showContent && <Logo onAnimationEnd={handleAnimationEnd} />}
+      {showContent && (
+        <div className="content">
+          <div className="App">
+            <FormComponent />
+          </div>
+        </div>
+      )}
+    </FormProvider>
   );
 }
 

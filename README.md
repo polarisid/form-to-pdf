@@ -1,8 +1,7 @@
-# Form2PDF - Relatório RAC
+# Relatório Fácil - Relatório RAC
 
+Sistema online para gerar relatórios de instalação e reparos de condicionadores de ar.
 Este projeto visa utilizar a tecnologia a fim de otimizar o tempo de preenchimento de um relatorio que antes era preenchido diretamente em um PDF agora pode ser feito direto na Web
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Tecnologias e Libs utilizadas
 
@@ -27,3 +26,5 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 ### 17/04 - Adicionada a opção de anexar fotos
 
 ### 19/04 - Refatoração de código e adicionada questões opcionais que se abrem de acordo com a resposta anterior
+
+### 25/04 - Refatoração de código com uso de hooks, context API e componentização
