@@ -36,3 +36,23 @@
     transform: rotate(360deg);
   }
 }
+
+/* Estilos para a barra de rolagem */
+::-webkit-scrollbar {
+  width: 10px; /* largura da barra de rolagem */
+}
+
+/* Track (parte da barra de rolagem que não está preenchida) */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; /* cor de fundo */
+}
+
+/* Thumb (parte da barra de rolagem que o usuário arrasta) */
+::-webkit-scrollbar-thumb {
+  background: #888; /* cor do botão de rolagem */
+}
+
+/* Hover no Thumb */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; /* cor do botão de rolagem ao passar o mouse */
+}

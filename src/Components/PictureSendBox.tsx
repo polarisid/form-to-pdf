@@ -1,12 +1,14 @@
 import CameraCapture from "../utils/camera";
 import React from "react";
 import styled from "styled-components";
+
 interface PictureSendBoxProps {
   selectedSession: string;
   setSelectedSession: (session: string) => void;
   handleCapture: (imageSrc: string) => void;
   capturedImages: { session: string; image: string }[];
 }
+
 const PictureSendBox: React.FC<PictureSendBoxProps> = ({
   selectedSession,
   setSelectedSession,
@@ -15,8 +17,8 @@ const PictureSendBox: React.FC<PictureSendBoxProps> = ({
 }) => {
   return (
     <PictureContainerStyled>
-      <h1>EVIDENCIAS - ( EM DESENVOLVIMENTO)</h1>
-      <div>
+      <SectionTitle>EVIDÊNCIAS</SectionTitle>
+      <SessionSelection>
         <label htmlFor="session">Selecione uma sessão:</label>
         <select
           id="session"
@@ -31,46 +33,85 @@ const PictureSendBox: React.FC<PictureSendBoxProps> = ({
           <option value="Peças">Fotos das Peças</option>
           <option value="Defeito">Fotos do Defeito</option>
         </select>
-      </div>
-      <div>
-        <h1>Tire uma foto</h1>
+      </SessionSelection>
+      <PhotoCaptureSection>
+        <PhotoCaptureTitle>Tire uma foto</PhotoCaptureTitle>
         <CameraCapture onCapture={handleCapture} />
-      </div>
-      <div>
-        {/* <h2>Upload de Foto</h2>
-      <ImageUploader
-        withIcon
-        buttonText="Escolher Imagem"
-        onChange={handleImageUpload}
-        imgExtension={[".jpg", ".png"]}
-        maxFileSize={5242880}
-      /> */}
-      </div>
+      </PhotoCaptureSection>
       {capturedImages.length > 0 && (
-        <div>
-          <h2>Preview</h2>
-          <div style={{ display: "flex", flexWrap: "wrap" }}>
-            {capturedImages.map((capture: any, index: any) => (
-              <div key={index} style={{ margin: "10px" }}>
-                <img
-                  src={capture.image}
-                  alt={`Captured ${index}`}
-                  style={{ maxWidth: "100px", maxHeight: "100px" }}
-                />
-                <p>Sessão: {capture.session}</p>
-              </div>
+        <PreviewSection>
+          <PreviewTitle>Preview</PreviewTitle>
+          <ImagesGrid>
+            {capturedImages.map((capture, index) => (
+              <PreviewImage key={index}>
+                <img src={capture.image} alt={`Captured ${index}`} />
+                <SessionLabel>Sessão: {capture.session}</SessionLabel>
+              </PreviewImage>
             ))}
-          </div>
-        </div>
+          </ImagesGrid>
+        </PreviewSection>
       )}
     </PictureContainerStyled>
   );
 };
 
 const PictureContainerStyled = styled.div`
-  h1 {
-    font-size: 1rem;
+  padding: 20px;
+`;
+
+const SectionTitle = styled.h1`
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+`;
+
+const SessionSelection = styled.div`
+  margin-bottom: 20px;
+
+  label {
+    margin-right: 10px;
   }
+
+  select {
+    padding: 8px;
+    font-size: 16px;
+  }
+`;
+
+const PhotoCaptureSection = styled.div`
+  margin-bottom: 20px;
+`;
+
+const PhotoCaptureTitle = styled.h2`
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+`;
+
+const PreviewSection = styled.div`
+  margin-top: 20px;
+`;
+
+const PreviewTitle = styled.h2`
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+`;
+
+const ImagesGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+`;
+
+const PreviewImage = styled.div`
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+  }
+`;
+
+const SessionLabel = styled.p`
+  margin-top: 5px;
+  font-size: 14px;
 `;
 
 export default PictureSendBox;

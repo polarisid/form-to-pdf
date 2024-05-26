@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { TextField, Button } from "@mui/material";
-import Radio from "@mui/material/Radio";
-import RadioGroup from "@mui/material/RadioGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Box from "@mui/material/Box";
+import { Button, Grid } from "@mui/material";
 import { FormDataSections } from "../utils/FormData";
+import RadioQuestion from "../Components/radioQuestion";
+import TextFieldQuestion from "../Components/textQuestion";
 import {
   Header,
   PictureSendBox,
@@ -23,11 +21,9 @@ const FormComponent: React.FC = () => {
   const {
     formData,
     selectedSession,
-    setFormData,
     capturedImages,
     setCapturedImages,
     setSelectedSession,
-    handleChange,
   } = useForm();
 
   const handleCapture = (imageSrc: string) => {
@@ -134,51 +130,11 @@ const FormComponent: React.FC = () => {
       <div className="questions-class" key={index}>
         <label>{question.text}</label>
         {Array.isArray(question.options) ? (
-          <RadioButtonsSection>
-            {question.options.map((option, optionIndex) => (
-              <div key={optionIndex}>
-                <RadioGroup
-                  row
-                  aria-labelledby="demo-form-control-label-placement"
-                  name="position"
-                  value={formData[question.text] || ""}
-                  onChange={handleChange(question.text)}
-                >
-                  <FormControlLabel
-                    value={option}
-                    control={
-                      <Radio
-                        required
-                        name={question.text}
-                        value={option}
-                        checked={formData[question.text] === option}
-                      />
-                    }
-                    label={option}
-                    labelPlacement="top"
-                  />
-                </RadioGroup>
-              </div>
-            ))}
-          </RadioButtonsSection>
+          <RadioQuestion question={question} />
         ) : (
-          <Box
-            component="form"
-            sx={{
-              "& > :not(style)": { m: 1, width: "35ch" },
-            }}
-            noValidate
-            autoComplete="on"
-          >
-            <TextField
-              required
-              id="outlined-basic"
-              variant="outlined"
-              value={formData[question.text] || ""}
-              onChange={handleChange(question.text)}
-            />
-          </Box>
+          <TextFieldQuestion question={question} />
         )}
+
         {renderConditionalQuestions(
           question.conditionalQuestions?.[formData[question.text]]
         )}
@@ -187,42 +143,54 @@ const FormComponent: React.FC = () => {
   };
 
   return (
-    <>
+    <React.Fragment>
       <MainContainer>
-        {/* <LogoStyled><Logo /></LogoStyled */}
-        <Header />
-        <form onSubmit={handleSubmit}>
-          {sections.map((section, sectionIndex) => (
-            <FormQuestion
-              key={sectionIndex}
-              section={section}
-              sectionIndex={sectionIndex}
-              renderConditionalQuestions={renderConditionalQuestions}
-            ></FormQuestion>
-          ))}
-          <Button type="submit" variant="contained" color="success">
+        <Header version={"1.1.2"} />
+        <StyledForm onSubmit={handleSubmit}>
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+            justifyContent="center"
+          >
+            {sections.map((section, sectionIndex) => (
+              <Grid item xs={12} key={sectionIndex}>
+                <FormQuestion
+                  section={section}
+                  renderConditionalQuestions={renderConditionalQuestions}
+                />
+              </Grid>
+            ))}
+          </Grid>
+          <StyledButton type="submit" variant="contained" color="primary">
             GERAR PDF
-          </Button>
+          </StyledButton>
           <PictureSendBox
             selectedSession={selectedSession}
             setSelectedSession={setSelectedSession}
             handleCapture={handleCapture}
             capturedImages={capturedImages}
           />
-        </form>
+        </StyledForm>
       </MainContainer>
       <Footer />
-    </>
+    </React.Fragment>
   );
 };
-const LogoStyled = styled.div`
-  align-items: center;
-  text-align: center;
-`;
-const RadioButtonsSection = styled.div`
+
+const StyledForm = styled.form`
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  padding: 20px;
+
+  @media (min-width: 768px) {
+    max-width: 600px;
+    margin: 0 auto;
+  }
 `;
 
+const StyledButton = styled(Button)`
+  margin-top: 20px;
+`;
 export default FormComponent;
