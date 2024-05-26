@@ -1,24 +1,21 @@
 import React, { useEffect, useState } from "react";
-import "./Logo.css";
-
 import styled from "styled-components";
 import { TextField, Button } from "@mui/material";
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Box from "@mui/material/Box";
-import Logo from "./logo";
-import { FormDataSections } from "./utils/FormData";
+import { FormDataSections } from "../utils/FormData";
 import {
   Header,
   PictureSendBox,
   Footer,
   FormQuestion,
   MainContainer,
-} from "./Components";
-import Imprimir from "./imprimir";
-import { Section, Question } from "./Types/formTypes";
-import useForm from "./Hooks/useForm";
+} from "../Components";
+import Imprimir from "../utils/imprimir";
+import { Section, Question } from "../Types/formTypes";
+import useForm from "../Hooks/useForm";
 
 const sections: Section[] = FormDataSections;
 

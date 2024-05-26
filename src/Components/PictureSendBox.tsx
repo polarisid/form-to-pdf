@@ -1,4 +1,4 @@
-import CameraCapture from "../camera";
+import CameraCapture from "../utils/camera";
 import React from "react";
 import styled from "styled-components";
 interface PictureSendBoxProps {

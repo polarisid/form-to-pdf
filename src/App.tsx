@@ -1,9 +1,8 @@
 import "./App.css";
 import React, { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
 import { FormProvider } from "./Contexts/formContext";
-import Logo from "./logo";
-import FormComponent from "./formRefactor";
+import Logo from "./assets/logo";
+import FormComponent from "./Pages/formPage";
 function App() {
   const [showContent, setShowContent] = useState(false);
 
